@@ -1,4 +1,4 @@
-module socialNetwork/main
+module github.com/julienb86/Api_Social_Network
 
 go 1.13
 
