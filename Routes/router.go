@@ -7,5 +7,5 @@ import (
 
 func PostRoutes(route fiber.Router) {
 	route.Get("", controllers.GetAllPosts)
-
+	route.Post("", controllers.CreatePost)
 }

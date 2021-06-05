@@ -1,6 +1,14 @@
 package controllers
 
-import "github.com/gofiber/fiber/v2"
+import (
+	"os"
+	"time"
+
+	"github.com/gofiber/fiber/v2"
+	config "github.com/julienb86/Api_Social_Network/Config"
+	models "github.com/julienb86/Api_Social_Network/Models"
+	"go.mongodb.org/mongo-driver/bson"
+)
 
 type Post struct {
 	Id        int    `json:"id"`
@@ -38,6 +46,47 @@ func GetAllPosts(c *fiber.Ctx) error {
 		"success": true,
 		"data": fiber.Map{
 			"posts": posts,
+		},
+	})
+}
+
+func CreatePost(c *fiber.Ctx) error {
+	postCollection := config.MI.DB.Collection(os.Getenv("POST_COLLECTION"))
+
+	data := new(models.Post)
+	data.CreatedAt = time.Now().UTC()
+	data.UpdatedAt = time.Now().UTC()
+	err := c.BodyParser(&data)
+
+	// if error
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Cannot parse JSON",
+			"error":   err,
+		})
+	}
+
+	result, err := postCollection.InsertOne(c.Context(), data)
+
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"message": "Cannot insert todo",
+			"error":   err,
+		})
+	}
+
+	// get the inserted data
+	post := &models.Post{}
+	query := bson.D{{Key: "_id", Value: result.InsertedID}}
+
+	postCollection.FindOne(c.Context(), query).Decode(post)
+
+	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
+		"success": true,
+		"data": fiber.Map{
+			"posts": data,
 		},
 	})
 }
