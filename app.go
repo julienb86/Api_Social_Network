@@ -3,7 +3,6 @@ package main
 import (
 	"github.com/gofiber/fiber/v2"
 	routes "github.com/julienb86/Api_Social_Network/Routes"
-	"github.com/julienb86/Api_Social_Network/routes"
 )
 
 func main() {

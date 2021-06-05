@@ -2,7 +2,7 @@ package routes
 
 import (
 	"github.com/gofiber/fiber/v2"
-	"github.com/julienb86/Api_Social_Network/controllers"
+	controllers "github.com/julienb86/Api_Social_Network/Controllers"
 )
 
 func PostRoutes(route fiber.Router) {
